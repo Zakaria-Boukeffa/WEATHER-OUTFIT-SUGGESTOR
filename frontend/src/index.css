@@ -1,0 +1,71 @@
+:root {
+  --ink: #e7e2d5;   
+  --bg: #000000;    
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  color: var(--ink);
+  font-family: "VT323", monospace;
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+h1, h2 {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+button, select, input {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      #101010 0px,
+      #1a1a1a 17px,
+      transparent 20px,
+      transparent 40px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      #1a1a1a 0px,
+      #073f3c 17px,
+      transparent 20px,
+      transparent 40px
+    );
+
+  opacity: 0.25;   
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.04) 0px,
+    rgba(255,255,255,0.04) 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  opacity: 0.15;
+}
