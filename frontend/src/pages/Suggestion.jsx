@@ -3,9 +3,7 @@ import { useSearchParams } from "react-router-dom";
 const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 
-/* ---------------------------------------------
-   OUTFIT RULES (automatic suggestion by weather)
-----------------------------------------------*/
+
 const outfitRules = (slot) => {
   const temp = slot?.main?.temp ?? 15;
   const weather = slot?.weather?.[0]?.main ?? "";
@@ -16,7 +14,6 @@ const outfitRules = (slot) => {
   let pants = null;
   let shoes = null;
 
-  // 🌧 RAIN
   if (weather === "Rain") {
     jacket = random(["j1.png", "j2.png"]);
     pull = random(["p1.png", "p2.png"]);
@@ -24,7 +21,6 @@ const outfitRules = (slot) => {
     shoes = "s1.png"; 
   }
 
-  // ❄ VERY COLD
   else if (temp < 5) {
     jacket = "j3.png";
     pull = random(["p1.png", "p2.png"]);
@@ -32,7 +28,6 @@ const outfitRules = (slot) => {
     shoes = "s1.png";
   }
 
-  // 🧊 COLD
   else if (temp >= 5 && temp < 12) {
     jacket = random(["j1.png", "j2.png"]);
     pull = random(["p1.png", "p2.png"]);
@@ -40,14 +35,12 @@ const outfitRules = (slot) => {
     shoes = random(["s1.png", "s2.png", "s3.png"]);
   }
 
-  // 🌤 MILD WEATHER
   else if (temp >= 12 && temp < 20) {
     pull = random(["p1.png", "p2.png"]);
     pants = random(["pa1.png", "pa2.png", "pa3.png"]);
     shoes = random(["s1.png", "s2.png", "s3.png"]);
   }
 
-  // 🔥 HOT
   else if (temp >= 20) {
     tshirt = random(["t1.png", "t2.png", "t3.png"]);
     pants = random(["pa1.png", "pa2.png", "pa3.png"]);
@@ -67,9 +60,7 @@ export default function Suggestion() {
   const [showJacket, setShowJacket] = useState(true);
 
 
-  /* ----------------------------
-     STATE : CURRENT OUTFIT
-  -----------------------------*/
+
   const [currentOutfit, setCurrentOutfit] = useState({
     jacket: null,
     pull: null,
@@ -78,9 +69,7 @@ export default function Suggestion() {
     shoes: null,
   });
 
-  /* ----------------------------
-     FETCH WEATHER
-  -----------------------------*/
+
   useEffect(() => {
     fetch(`http://127.0.0.1:5000/weather/${city}`)
       .then((res) => res.json())
@@ -93,9 +82,7 @@ export default function Suggestion() {
       ? data.forecast[day]
       : [];
 
-  /* ----------------------------
-     APPLY OUTFIT RULES AUTOMATICALLY
-  -----------------------------*/
+
   useEffect(() => {
     if (slots.length > 0) {
       const outfit = outfitRules(slots[0]);
@@ -103,9 +90,7 @@ export default function Suggestion() {
     }
   }, [slots]);
 
-  /* ----------------------------
-     TIME FORMATTER
-  -----------------------------*/
+
   const fmtHour = (d) => {
     if (d?.dt_txt) return d.dt_txt.slice(11, 16);
     if (d?.dt)
@@ -116,9 +101,7 @@ export default function Suggestion() {
     return "--:--";
   };
 
-  /* ----------------------------
-     DISPLAY DATE (today/tomorrow/after)
-  -----------------------------*/
+
   const getDisplayedDate = () => {
     const today = new Date();
 
@@ -139,31 +122,32 @@ export default function Suggestion() {
     return "";
   };
 
-  /* ----------------------------
-            RENDER
-  -----------------------------*/
+
+  const [isJacketVisible, setIsJacketVisible] = useState(true);
+
 
   return (
     <div
       style={{
-        maxWidth: "900px",
+        maxWidth: "1000px",
         margin: "40px auto",
         color: "var(--ink)",
         fontFamily: "monospace",
         padding: "16px",
         border: "1px solid #333",
         borderRadius: "8px",
-        background: "rgba(0,0,0,0.6)",
+        background: "rgba(0,0,0,1)",
         boxShadow: "0 0 0 2px #111 inset",
         display: "flex",
         gap: "20px",
       }}
     >
       {/* ======================================================
-                        LEFT SIDE → OUTFIT
+                        LEFT SIDE 
       =======================================================*/}
+      
         <div style={{
-          width: "300px",
+          width: "500px",
           textAlign: "center",
           display: "flex",
           flexDirection: "column",
@@ -171,26 +155,53 @@ export default function Suggestion() {
         }}>
         <h2 style={{ marginBottom: "12px" }}>Outfit</h2>
 
-        {/* Jacket */}
+
         {currentOutfit.jacket && (
-          <img
-            src={`/${currentOutfit.jacket}`}
-            alt="jacket"
+          <button
+            onClick={() => setIsJacketVisible(!isJacketVisible)}
             style={{
-            width: "220px",
-            height: "220px",
-            objectFit: "contain",
-            marginBottom: "-80px",
-            zIndex: 3,
-            cursor: "pointer"
-          }}
-            onClick={() => {
-              const jackets = ["j1.png", "j2.png", "j3.png"];
-              const next =
-                jackets[(jackets.indexOf(currentOutfit.jacket) + 1) % jackets.length];
-              setCurrentOutfit({ ...currentOutfit, jacket: next });
+              padding: "10px 20px",
+              backgroundColor: "black",
+              color: "white",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "5px",
+              zIndex: 4,
+              marginTop: "20px", 
             }}
-          />
+          >
+            {isJacketVisible ? "Masquer la veste" : "Afficher la veste"}
+          </button>
+        )}
+  
+
+        {/* Jacket */}
+        {currentOutfit.jacket && isJacketVisible && (
+          <div style={{
+            position: "relative",
+            display: "inline-block",
+            marginBottom: "-70x",
+            zIndex: 3,
+          }}>
+            <img
+              src={`/${currentOutfit.jacket}`}
+              alt="jacket"
+              style={{
+                width: "280px",
+                height: "290px",
+                objectFit: "contain",
+                position: "absolute", 
+                top: 2,
+                right: 0, 
+                zIndex: 3, 
+              }}
+              onClick={() => {
+                const jackets = ["j1.png", "j2.png", "j3.png"];
+                const next = jackets[(jackets.indexOf(currentOutfit.jacket) + 1) % jackets.length];
+                setCurrentOutfit({ ...currentOutfit, jacket: next });
+              }}
+            />
+          </div>
         )}
 
         {/* Pull */}
@@ -199,22 +210,20 @@ export default function Suggestion() {
             src={`/${currentOutfit.pull}`}
             alt="pull"
             style={{
-            width: "280px",
-            height: "280px",
-            objectFit: "contain",
-            marginBottom: "-50px",
-            zIndex: 2,
-            cursor: "pointer"
-          }}
+              width: "280px",
+              height: "280px",
+              objectFit: "contain",
+              marginBottom: "-40px",
+              zIndex: 2, 
+              cursor: "pointer",
+            }}
             onClick={() => {
               const pulls = ["p1.png", "p2.png"];
-              const next =
-                pulls[(pulls.indexOf(currentOutfit.pull) + 1) % pulls.length];
+              const next = pulls[(pulls.indexOf(currentOutfit.pull) + 1) % pulls.length];
               setCurrentOutfit({ ...currentOutfit, pull: next });
             }}
           />
         )}
-
         {/* T-shirt */}
         {currentOutfit.tshirt && (
           <img
@@ -247,7 +256,7 @@ export default function Suggestion() {
           height: "230px",
           objectFit: "contain",
           marginBottom: "-70px",
-          marginTop: -20,
+          marginTop: -30,
           zIndex: 1,
           cursor: "pointer"
         }}
@@ -281,20 +290,35 @@ export default function Suggestion() {
       </div>
 
       {/* ======================================================
-                      RIGHT SIDE → WEATHER TABLE
+                      RIGHT SIDE 
       =======================================================*/}
-      <div style={{ flex: 1 }}>
+      <div style={{
+          flex: 1,
+          width: "250px",
+          alignItems: "flex-end",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          minHeight: "600px",
+        }}>
         <h1
           style={{
-            margin: "0 0 4px",
+            margin: "0 0 5px",
             textTransform: "uppercase",
             letterSpacing: "2px",
+            textAlign: "left",
+            width: "100%",
           }}
         >
           Suggestions
         </h1>
 
-        <div style={{ opacity: 0.8, marginBottom: 12 }}>
+        <div style={{ 
+          opacity: 0.8, 
+          marginBottom: 12,
+          textAlign: "left",
+          width: "100%"
+           }}>
           City : <b>{city}</b> &nbsp;|&nbsp; Day :{" "}
           <b>
             {day} ({getDisplayedDate()})
@@ -328,7 +352,7 @@ export default function Suggestion() {
 
             <div
               style={{
-                maxHeight: "65vh",
+                height: "93%",
                 overflow: "auto",
                 border: "1px solid #2a2a2a",
                 borderRadius: "6px",
