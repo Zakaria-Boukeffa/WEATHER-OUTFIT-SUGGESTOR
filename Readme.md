@@ -28,7 +28,7 @@ It fetches real-time weather data and dynamically displays an outfit. The user c
 - **Flask**: For handling the backend and serving the weather data.
 - **Weather API (OpenWeather)**: Fetches live weather data (e.g., temperature, conditions, wind speed, humidity).
 
-- ## Future Improvements
+## Future Improvements
 
 - **Custom Clothing**: Initially, the app suggests predefined clothing items (images stored locally). Later, users will be able to upload their own photos of clothing and use them in the outfit generation process.
 - **Data Storage**: Data related to imported clothing and generated outfits will be saved in a database. This will allow users to keep a history and retrieve previously created outfits.
@@ -37,3 +37,4 @@ It fetches real-time weather data and dynamically displays an outfit. The user c
 ## Deployment
 
 The app will be deployed to a cloud platform so users will be able to access the app from any device.
+
